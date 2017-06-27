@@ -1,10 +1,8 @@
 package org.chompzki.rt.data.securicty;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.IncorrectClaimException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MissingClaimException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.crypto.MacProvider;
 
@@ -12,7 +10,7 @@ import java.security.Key;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
+import java.util.UUID;
 
 import org.chompzki.rt.data.DataFacade;
 import org.chompzki.rt.data.dto.UserDTO;
@@ -24,6 +22,13 @@ public class SecurityFacade {
 	public final static Key key = MacProvider.generateKey();
 	public final static String ISSUER = "101 HOMER SIMPSON 101";
 	
+	private static SecurityFacade instance = null;
+	
+	public static SecurityFacade getInstance() {
+		if(instance == null)
+			instance = new SecurityFacade();
+		return instance;
+	}
 	
 	public SecurityFacade() {
 		DataFacade.getInstance().register(AccessDTO.class, new AccessBroker());
@@ -127,6 +132,12 @@ public class SecurityFacade {
 	/** FACTORY PATTERN: NEEDS TO CONVERT ANY ACCESDTO INTO IT'S CORRECT ACCESS**/
 	protected Access access(AccessDTO dto) {
 		//TODO: ???
+		return null;
+	}
+
+	public UUID getID(Class<?> category, long id, EnumAccess standardAccessLevel) {
+		// TODO Auto-generated method stub
+		
 		return null;
 	}
 	

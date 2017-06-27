@@ -1,0 +1,26 @@
+package org.chompzki.rt.web.builder.elements;
+
+import org.chompzki.rt.web.builder.WElement;
+
+public class WTextfield extends WElement {
+	//<input type="text" name="lastname" value="Mouse"><br><br>
+	
+	protected String title = null;
+	protected String name = null;
+	protected String value = null;
+	
+	public WTextfield(String title, String name, String value) {
+		this.title = title;
+		this.name = name;
+		this.value = value;
+	}
+	
+	@Override
+	protected String internalBuild() {
+		String elm = "<div class=\"field_box\">" + title;
+		elm += "<input type=\"text\" name=\""+name+"\" value=\""+value+"\">";
+		elm += "</div>";
+		return elm;
+	}
+
+}
