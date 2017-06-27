@@ -1,7 +1,11 @@
 package org.chompzki.rt.data;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.chompzki.rt.data.broker.Broker;
+import org.chompzki.rt.data.dto.DTO;
 
 public class DataFacade {
 	
@@ -13,10 +17,14 @@ public class DataFacade {
 		return instance;
 	}
 	
-	public <T> List<T> find(T dto) {
-		List<T> list = new ArrayList<T>();
-		
-		return list;
+	protected Map<Class<? extends DTO>, Broker> brokers = new HashMap<Class<? extends DTO>, Broker>();
+	
+	public <T extends DTO> List<T> find(T dto) {
+		return brokers.get(dto.getClass()).find(dto);
+	}
+
+	public void register(Class<? extends DTO> clz, Broker broker) {
+		brokers.put(clz, broker);
 	}
 	
 	

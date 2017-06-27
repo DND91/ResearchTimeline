@@ -16,11 +16,19 @@ import java.util.Map;
 
 import org.chompzki.rt.data.DataFacade;
 import org.chompzki.rt.data.dto.UserDTO;
+import org.chompzki.rt.data.securicty.broker.AccessBroker;
+import org.chompzki.rt.data.securicty.dto.AccessDTO;
 
 public class SecurityFacade {
 	
 	public final static Key key = MacProvider.generateKey();
 	public final static String ISSUER = "101 HOMER SIMPSON 101";
+	
+	
+	public SecurityFacade() {
+		DataFacade.getInstance().register(AccessDTO.class, new AccessBroker());
+		
+	}
 	
 	/**
 	 * 
@@ -93,6 +101,51 @@ public class SecurityFacade {
 		
 	}
 	
+	/**
+	 * Group User Membership Object Action
+	 * Actions; View,
+	 * User can have permissions
+	 * Groups can have permissions 
+	 * Users can belong to groups
+	 * Objects have "standard" permissions for everyone
+	 * 
+	 * 
+	 * 
+	 */
 	
+	public boolean hasAccess(ISecurityMaster master, ISecurityObject object, String action) {
+		AccessDTO dto = new AccessDTO(master.getSecurityID(), object.getSecurityID());
+		List<AccessDTO> list = DataFacade.getInstance().find(dto);
+		if(list.size() != 1)
+			return false;
+		
+		Access access = access(list.get(0));
+		
+		return access.authenticate(action);
+	}
+	
+	/** FACTORY PATTERN: NEEDS TO CONVERT ANY ACCESDTO INTO IT'S CORRECT ACCESS**/
+	protected Access access(AccessDTO dto) {
+		//TODO: ???
+		return null;
+	}
 	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
