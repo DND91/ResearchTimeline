@@ -5,10 +5,15 @@ import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import org.chompzki.rt.securicty.SecurityFacade;
 import org.chompzki.rt.web.builder.WBody;
+import org.chompzki.rt.web.builder.WElement;
 import org.chompzki.rt.web.builder.WHead;
 import org.chompzki.rt.web.builder.WPage;
+import org.chompzki.rt.web.builder.block.ContentBlocks;
+import org.chompzki.rt.web.builder.elements.WDiv;
 
 public abstract class Page {
 	
@@ -25,11 +30,13 @@ public abstract class Page {
 	
 	public abstract void success(HttpServletRequest req, HttpServletResponse resp);
 	
-	public abstract void failure();
+	public abstract void failure(HttpServletRequest req, HttpServletResponse resp);
 	
 	protected WPage start(String title) {
 		WPage page = new WPage();
 		WHead head = new WHead(title);
+		head.addStylesheet("/ResearchTimeline/styles/defaultLayout");
+		head.addStylesheet("/ResearchTimeline/styles/default");
 		WBody body = new WBody();
 		page.setHead(head);
 		page.setBody(body);
@@ -49,6 +56,12 @@ public abstract class Page {
 			}
 			e.printStackTrace();
 		}
+	}
+	
+	protected String getUsername(HttpServletRequest req) {
+		HttpSession session = req.getSession();
+		String token = (String) session.getAttribute("TOKEN");
+		return SecurityFacade.getInstance().extractUsername(token);
 	}
 	
 }

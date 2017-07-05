@@ -1,10 +1,10 @@
-package org.chompzki.rt.web.page;
+package org.chompzki.rt.web.servlet;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.chompzki.rt.data.securicty.SecurityFacade;
+import org.chompzki.rt.securicty.SecurityFacade;
 
 public abstract class BaseServlet extends HttpServlet {
 
@@ -26,19 +26,27 @@ public abstract class BaseServlet extends HttpServlet {
 	}
 	
 	protected boolean handleSecurity(HttpSession session, HttpServletResponse resp) {
+		if(!this.verify(session)){
+			this.redirectLogin(resp);
+			return false;
+		}
+		Object obj = session.getAttribute("TOKEN");
+		String token = (String)obj;
+		token = SecurityFacade.getInstance().refreshToken(token);
+		session.setAttribute("TOKEN", token);
+		return true;
+	}
+
+	protected void redirectLogin(HttpServletResponse resp) {
+		redirect(resp, "login");
+	}
+	
+	protected void redirect(HttpServletResponse resp, String url) {
 		try {
-			if(!this.verify(session)){
-				resp.sendRedirect("/login");
-				return false;
-			}
-			Object obj = session.getAttribute("TOKEN");
-			String token = (String)obj;
-			token = SecurityFacade.getInstance().refreshToken(token);
-			session.setAttribute("TOKEN", token);
-			return true;
+			resp.sendRedirect("/ResearchTimeline/" + url);
+
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			return false;
 		}
 	}
 	

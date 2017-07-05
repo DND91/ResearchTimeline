@@ -5,6 +5,11 @@ import java.util.List;
 
 public class WBody {
 	
+	//HEADER
+	//MENU
+	//CONTENT
+	//FOOTER
+	
 	protected List<WElement> elements = new ArrayList<WElement>();
 	protected List<WScript> scripts = new ArrayList<WScript>();
 	

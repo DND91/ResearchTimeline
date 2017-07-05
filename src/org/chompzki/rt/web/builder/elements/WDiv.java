@@ -18,7 +18,7 @@ public class WDiv extends WElement {
 	
 	@Override
 	protected String internalBuild() {
-		return "<div>";
+		return "<div " + getClasses() + " >";
 	}
 	
 	protected String getEnd() {

@@ -12,7 +12,7 @@ public class WForm extends WDiv {
 	
 	@Override
 	protected String internalBuild() {
-		return "<form action=\"" + action + "\" method=\"" + method + "\">";
+		return "<form " + getClasses() + " action=\"" + action + "\" method=\"" + method + "\">";
 	}
 	
 	@Override

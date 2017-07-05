@@ -1,4 +1,4 @@
-package org.chompzki.rt.data.securicty;
+package org.chompzki.rt.securicty;
 
 public enum EnumAccess {
 	NONE(0),

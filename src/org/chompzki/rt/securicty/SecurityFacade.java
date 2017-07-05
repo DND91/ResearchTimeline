@@ -1,4 +1,4 @@
-package org.chompzki.rt.data.securicty;
+package org.chompzki.rt.securicty;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -14,8 +14,8 @@ import java.util.UUID;
 
 import org.chompzki.rt.data.DataFacade;
 import org.chompzki.rt.data.dto.UserDTO;
-import org.chompzki.rt.data.securicty.broker.AccessBroker;
-import org.chompzki.rt.data.securicty.dto.AccessDTO;
+import org.chompzki.rt.securicty.broker.SecurityBroker;
+import org.chompzki.rt.securicty.dto.SecurityDTO;
 
 public class SecurityFacade {
 	
@@ -31,8 +31,7 @@ public class SecurityFacade {
 	}
 	
 	public SecurityFacade() {
-		DataFacade.getInstance().register(AccessDTO.class, new AccessBroker());
-		
+		DataFacade.getInstance().register(SecurityDTO.class, new SecurityBroker());
 	}
 	
 	/**
@@ -119,26 +118,43 @@ public class SecurityFacade {
 	 */
 	
 	public boolean hasAccess(ISecurityMaster master, ISecurityObject object, String action) {
-		AccessDTO dto = new AccessDTO(master.getSecurityID(), object.getSecurityID());
+		/*SecurityDTO dto = new SecurityDTO();
 		List<AccessDTO> list = DataFacade.getInstance().find(dto);
 		if(list.size() != 1)
 			return false;
 		
 		Access access = access(list.get(0));
+		*/
 		
-		return access.authenticate(action);
+		return false; //access.authenticate(action);
 	}
 	
 	/** FACTORY PATTERN: NEEDS TO CONVERT ANY ACCESDTO INTO IT'S CORRECT ACCESS**/
-	protected Access access(AccessDTO dto) {
+	protected Access access(SecurityDTO dto) {
 		//TODO: ???
 		return null;
 	}
 
-	public UUID getID(Class<?> category, long id, EnumAccess standardAccessLevel) {
-		// TODO Auto-generated method stub
+	public UUID getIDFromType(Class<?> type, EnumAccess access) {
+		SecurityDTO dto = new SecurityDTO();
+		dto.setType(type.getName());
+		dto.setStandardAccess(access.getID());
 		
-		return null;
+		List<SecurityDTO> list = DataFacade.getInstance().find(dto);
+		if(list.size() == 0) {
+			DataFacade.getInstance().save(dto);
+			return dto.getSecurityId();
+		} else if (1 < list.size()) {
+			return null;
+		}
+		
+		return list.get(0).getSecurityId();
+	}
+
+	public String extractUsername(String compactJWS) {
+		Jws<Claims> claims = getClaims(compactJWS);
+		
+		return (String) claims.getBody().get("U");
 	}
 	
 }
