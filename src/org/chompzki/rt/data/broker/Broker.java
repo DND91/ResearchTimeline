@@ -1,10 +1,14 @@
 package org.chompzki.rt.data.broker;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.chompzki.rt.data.dto.DTO;
+import org.chompzki.rt.securicty.dto.SecurityDTO;
 
 public abstract class Broker <T extends DTO> {
 	
@@ -37,4 +41,55 @@ public abstract class Broker <T extends DTO> {
 	protected abstract void findInStorage(Connection con, T dto, List<T> list);
 	protected abstract void deleteInStorage(Connection con, T dto);
 	
+	/** HELPER METHODS **/
+	
+	protected byte[] generateUUID(Connection con) {
+		String query = "SELECT UNHEX(REPLACE(UUID(),'-',''));";
+		
+		PreparedStatement prepStmt = null;
+		
+		try {
+			prepStmt = con.prepareStatement(query);
+			ResultSet rset = prepStmt.executeQuery(); 
+			
+			if (rset.next()) {
+				byte[] bytes = rset.getBytes(1);
+				if(bytes.length != 16)
+					throw new SQLException("Error in generate new UUID size. (SIZE = " + bytes.length + ")");
+				
+				return bytes;
+			} else {
+				throw new SQLException("Failed to generate new UUID.");
+			}
+			
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			if (prepStmt != null) {
+				try {
+					prepStmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return null;
+	}
+	
+	
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -37,11 +37,6 @@ CREATE TABLE `Securitys` (
     PRIMARY KEY(`securityId`)	
 )//
 
-CREATE TRIGGER `t_Securitys` BEFORE INSERT ON `Securitys`
- FOR EACH ROW BEGIN
- SET NEW.securityId = UNHEX(REPLACE(UUID(),'-',''));
-END//
-
 # SECURITY GROUP
 
 CREATE TABLE `SecurityGroups` (
@@ -49,11 +44,6 @@ CREATE TABLE `SecurityGroups` (
     `name` VARCHAR(64) NOT NULL,
     PRIMARY KEY(`groupId`)	
 )//
-
-CREATE TRIGGER `t_SecurityGroups` BEFORE INSERT ON `SecurityGroups`
- FOR EACH ROW BEGIN
- SET NEW.groupId = UNHEX(REPLACE(UUID(),'-',''));
-END//
 
 # USER
 
@@ -64,14 +54,6 @@ CREATE TABLE `Users` (
     PRIMARY KEY(`userId`),
     FOREIGN KEY (`securityId`) REFERENCES `Securitys`(`securityId`)
 )//
-
-CREATE TRIGGER `t_Users` BEFORE INSERT ON `Users`
-FOR EACH ROW 
-BEGIN
-	SET NEW.userId = UNHEX(REPLACE(UUID(),'-',''));
-	INSERT INTO `Securitys`(`access`) VALUES (0);
-    SET NEW.securityId = LAST_INSERT_ID(); 
-END//
 
 # USER ACCESS
 
